@@ -32,6 +32,11 @@ class Jekyll::Thumbnail < Liquid::Tag
   def render(context)
     if @source
 
+      if /\{\{([\w\-]+)\}\}/ =~ @source
+        raise ArgumentError.new("No variable #{$1} was found in thumbnail tag") if context[$1].nil?
+        @source = context[$1]
+      end
+
       # parking
       source = @source
       dimensions = @dimensions
