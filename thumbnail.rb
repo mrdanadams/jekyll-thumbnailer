@@ -36,6 +36,11 @@ class Jekyll::Thumbnail < Liquid::Tag
       source = @source
       dimensions = @dimensions
 
+      if /\{\{([\w\-]+)\}\}/ =~ @source
+        raise ArgumentError.new("No variable #{$1} was found in thumbnail tag") if context[$1].nil?
+        source = context[$1]
+      end
+
       source_path = "./source#{source}"
       raise "#{source} is not readable" unless File.readable?(source_path)
       ext = File.extname(source)
